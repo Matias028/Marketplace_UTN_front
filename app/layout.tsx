@@ -6,9 +6,9 @@ import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'MarketPlace UTN',
+  description: 'Created with Matias Gonzalez',
+  generator: 'Matias Gonzalez',
 }
 
 export default function RootLayout({

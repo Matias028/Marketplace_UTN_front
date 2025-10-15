@@ -15,7 +15,7 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -36,8 +36,14 @@ export default function RegisterPage() {
 
     setIsLoading(true)
 
-    // TODO: Replace with actual MySQL user creation
-    const response = await fetch('http://localhost:8080/api/auth/register', { method: 'POST', body: JSON.stringify(formData) })
+
+const response = await fetch('http://localhost:8080/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(formData)
+})
+
+    console.log(formData)
 
     if (response.ok) {
       setTimeout(() => {
@@ -49,13 +55,6 @@ export default function RegisterPage() {
       alert(errorData.message || 'Error al crear la cuenta')
       setIsLoading(false)
     }
-
-    // Simulate API call
-    //setTimeout(() => {
-      //console.log("Register attempt:", formData)
-      // For now, just redirect to dashboard
-      //router.push("/dashboard")
-    //}, 1000)
   }
 
   return (
@@ -111,7 +110,7 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-              <div className="space-y-2">
+{              <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
                 <Input
                   id="confirmPassword"
@@ -122,7 +121,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   required
                 />
-              </div>
+              </div>}
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={isLoading}>

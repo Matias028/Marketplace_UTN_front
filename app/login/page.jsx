@@ -19,15 +19,28 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
 
-    // TODO: Replace with actual MySQL authentication
-    // Example: const response = await fetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) })
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Login attempt:", { email, password })
-      // For now, just redirect to dashboard
-      router.push("/dashboard")
-    }, 1000)
+      const result = await response.json()
+
+      if (response.ok) {
+        localStorage.setItem("token", result.token)
+        alert("Login exitoso")
+        router.push("/dashboard")
+      } else {
+        alert(result.message || "Error al iniciar sesión")
+      }
+    } catch (err) {
+      console.error("Error en login:", err)
+      alert("Error al conectar con el servidor")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -68,11 +81,6 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-              </div>
-              <div className="flex items-center justify-between">
-                <Link href="#" className="text-sm text-primary hover:underline">
-                  ¿Olvidaste tu contraseña?
-                </Link>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">

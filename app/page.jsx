@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Search, Car, Shield, Clock, MapPin, User, Phone, Mail, Gauge } from "lucide-react"
 
-// Mock data - Replace with MySQL data later
+
 const featuredCars = [
   {
     id: 1,

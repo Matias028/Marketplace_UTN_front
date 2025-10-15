@@ -44,14 +44,42 @@ export default function NewCarPage() {
     e.preventDefault()
     setIsLoading(true)
 
-    // TODO: Replace with actual MySQL insert
-    // Example: const response = await fetch('/api/cars', { method: 'POST', body: JSON.stringify(formData) })
+    try {
+      const token = localStorage.getItem("token")
+      if (!token) {
+        alert("No estás logueado")
+        setIsLoading(false)
+        return
+      }
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("New car submission:", formData)
-      router.push("/dashboard")
-    }, 1000)
+      const payload = {
+        title: `${formData.brand} ${formData.model}`,
+        ...formData
+      }
+
+      const response = await fetch("http://localhost:8080/api/cars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        alert("Auto publicado correctamente!")
+        router.push("/dashboard")
+      } else {
+        alert(result.message || "Error al publicar el auto")
+      }
+    } catch (err) {
+      console.error("Error al publicar auto:", err)
+      alert("Ocurrió un error al publicar el auto")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -132,9 +160,9 @@ export default function NewCarPage() {
                         <SelectValue placeholder="Selecciona condición" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="nuevo">Nuevo</SelectItem>
-                        <SelectItem value="seminuevo">Seminuevo</SelectItem>
-                        <SelectItem value="usado">Usado</SelectItem>
+                        <SelectItem value="Nuevo">Nuevo</SelectItem>
+                        <SelectItem value="Seminuevo">Seminuevo</SelectItem>
+                        <SelectItem value="Usado">Usado</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
