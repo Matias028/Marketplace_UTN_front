@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Car, Plus, Edit, Trash2, MapPin } from "lucide-react"
 
-// Mock user cars - Replace with MySQL data later
+// 🔹 Datos mock (después los reemplazás con los del backend)
 const mockUserCars = [
   {
     id: 1,
@@ -34,11 +35,26 @@ const mockUserCars = [
 ]
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [cars, setCars] = useState(mockUserCars)
 
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      router.push("/login")
+    }
+  }, [router])
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    router.push("/login")
+  }
+
   const handleDelete = (id) => {
-    // TODO: Replace with actual MySQL delete
-    // Example: await fetch(`/api/cars/${id}`, { method: 'DELETE' })
+    // TODO: reemplazar con delete real
     setCars(cars.filter((car) => car.id !== id))
   }
 
@@ -58,7 +74,7 @@ export default function DashboardPage() {
                 Inicio
               </Button>
             </Link>
-            <Button variant="ghost" size="sm" className="text-xs md:text-sm">
+            <Button variant="ghost" size="sm" className="text-xs md:text-sm" onClick={handleLogout}>
               Cerrar Sesión
             </Button>
           </nav>

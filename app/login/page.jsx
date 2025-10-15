@@ -29,6 +29,8 @@ export default function LoginPage() {
       const result = await response.json()
 
       if (response.ok) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         localStorage.setItem("token", result.token)
         alert("Login exitoso")
         router.push("/dashboard")

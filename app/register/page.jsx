@@ -37,11 +37,11 @@ export default function RegisterPage() {
     setIsLoading(true)
 
 
-const response = await fetch('http://localhost:8080/api/auth/register', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(formData)
-})
+    const response = await fetch('http://localhost:8080/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
 
     console.log(formData)
 
@@ -108,9 +108,12 @@ const response = await fetch('http://localhost:8080/api/auth/register', {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  minlength="8"
+                  pattern="(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                  title="Debe tener al menos 8 caracteres, una mayúscula y una minúscula."
                 />
               </div>
-{              <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
                 <Input
                   id="confirmPassword"
@@ -121,7 +124,7 @@ const response = await fetch('http://localhost:8080/api/auth/register', {
                   onChange={handleChange}
                   required
                 />
-              </div>}
+              </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={isLoading}>
