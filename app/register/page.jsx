@@ -86,6 +86,30 @@ export default function RegisterPage() {
                   required
                 />
               </div>
+              <div>
+                <label htmlFor="phone">Teléfono</label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="5411223344"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="city">Localidad</label>
+                <Input
+                  id="city"
+                  name="city"
+                  type="text"
+                  placeholder="Buenos Aires"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -126,7 +150,7 @@ export default function RegisterPage() {
                 />
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col gap-4">
+            <CardFooter className="flex flex-col gap-4 ">
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
               </Button>
