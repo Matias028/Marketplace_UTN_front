@@ -224,7 +224,7 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Autos Destacados</h2>
+              <h2 className="xl md:text-3xl font-bold tracking-tight">Autos Destacados</h2>
               <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">
                 Los mejores vehículos disponibles ahora
               </p>

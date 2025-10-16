@@ -37,15 +37,22 @@ const mockUserCars = [
 export default function DashboardPage() {
   const router = useRouter()
   const [cars, setCars] = useState(mockUserCars)
+  const [welcomeMsg, setWelcomeMsg] = useState("")
 
-
+  // 🔹 Verifica token al montar y redirige si no hay
   useEffect(() => {
     const token = localStorage.getItem("token")
     if (!token) {
       router.push("/login")
     }
-  }, [router])
 
+    
+    const user = localStorage.getItem("user")
+    if (user) {
+      const parsedUser = JSON.parse(user)
+      setWelcomeMsg(`Bienvenido ${parsedUser.name}`)
+    }
+  }, [router])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -54,7 +61,7 @@ export default function DashboardPage() {
   }
 
   const handleDelete = (id) => {
-    // TODO: reemplazar con delete real
+    // TODO: reemplazar con delete real del backend
     setCars(cars.filter((car) => car.id !== id))
   }
 
@@ -85,7 +92,7 @@ export default function DashboardPage() {
       <main className="container py-6 md:py-8 px-4 md:px-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Mis Publicaciones</h1>
+            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight"> {welcomeMsg}</h1>
             <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">Gestiona tus vehículos en venta</p>
           </div>
           <Button asChild size="sm" className="w-full sm:w-auto">

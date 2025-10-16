@@ -32,7 +32,7 @@ export default function LoginPage() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.setItem("token", result.token)
-        alert("Login exitoso")
+        localStorage.setItem("user", JSON.stringify(result.user));
         router.push("/dashboard")
       } else {
         alert(result.message || "Error al iniciar sesión")
