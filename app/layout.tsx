@@ -3,11 +3,14 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Analytics } from '@vercel/analytics/react'
 
+
+
+
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'MarketPlace UTN',
-  description: 'Created with Matias Gonzalez',
+  description: 'Plataforma de compra y venta de vehículos usada - Proyecto Final UTN',
   generator: 'Matias Gonzalez',
 }
 

@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,122 +9,24 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Search, Car, Shield, Clock, MapPin, User, Phone, Mail, Gauge } from "lucide-react"
 
-
-const featuredCars = [
-  {
-    id: 1,
-    brand: "Toyota",
-    model: "Camry",
-    year: 2022,
-    price: 28500,
-    mileage: 15000,
-    image: "/toyota-camry-2022.jpg",
-    location: "Buenos Aires",
-    condition: "Usado",
-    description:
-      "Excelente estado, único dueño. Mantenimiento al día en concesionaria oficial. Incluye kit de seguridad completo y sistema de navegación GPS.",
-    seller: {
-      name: "Carlos Rodríguez",
-      email: "carlos.rodriguez@email.com",
-      phone: "+54 11 1234-5678",
-    },
-  },
-  {
-    id: 2,
-    brand: "Honda",
-    model: "Civic",
-    year: 2023,
-    price: 32000,
-    mileage: 8000,
-    image: "/honda-civic-2023.jpg",
-    location: "Córdoba",
-    condition: "Usado",
-    description:
-      "Como nuevo, pocos kilómetros. Equipamiento full con asientos de cuero, techo solar y sistema de sonido premium.",
-    seller: {
-      name: "María González",
-      email: "maria.gonzalez@email.com",
-      phone: "+54 351 987-6543",
-    },
-  },
-  {
-    id: 3,
-    brand: "Ford",
-    model: "Mustang",
-    year: 2021,
-    price: 45000,
-    mileage: 22000,
-    image: "/ford-mustang-2021.jpg",
-    location: "Rosario",
-    condition: "Usado",
-    description:
-      "Motor V8, transmisión automática. Impecable estado mecánico y estético. Llantas deportivas y escape deportivo.",
-    seller: {
-      name: "Juan Pérez",
-      email: "juan.perez@email.com",
-      phone: "+54 341 555-1234",
-    },
-  },
-  {
-    id: 4,
-    brand: "Chevrolet",
-    model: "Cruze",
-    year: 2023,
-    price: 26000,
-    mileage: 5000,
-    image: "/chevrolet-cruze-2023.jpg",
-    location: "Mendoza",
-    condition: "Seminuevo",
-    description:
-      "Prácticamente sin uso, garantía de fábrica vigente. Control de crucero, sensores de estacionamiento y cámara trasera.",
-    seller: {
-      name: "Ana Martínez",
-      email: "ana.martinez@email.com",
-      phone: "+54 261 444-7890",
-    },
-  },
-  {
-    id: 5,
-    brand: "Volkswagen",
-    model: "Golf",
-    year: 2022,
-    price: 29500,
-    mileage: 12000,
-    image: "/volkswagen-golf-2022.jpg",
-    location: "La Plata",
-    condition: "Usado",
-    description:
-      "Versión GTI, motor turbo. Excelente performance y economía de combustible. Sistema de frenado ABS y control de estabilidad.",
-    seller: {
-      name: "Roberto Silva",
-      email: "roberto.silva@email.com",
-      phone: "+54 221 333-4567",
-    },
-  },
-  {
-    id: 6,
-    brand: "Nissan",
-    model: "Sentra",
-    year: 2023,
-    price: 27000,
-    mileage: 6000,
-    image: "/nissan-sentra-2023.jpg",
-    location: "Tucumán",
-    condition: "Seminuevo",
-    description:
-      "Bajo kilometraje, ideal para ciudad. Aire acondicionado automático, Bluetooth y pantalla táctil de 8 pulgadas.",
-    seller: {
-      name: "Laura Fernández",
-      email: "laura.fernandez@email.com",
-      phone: "+54 381 222-9876",
-    },
-  },
-]
-
 export default function HomePage() {
+  const [cars, setCars] = useState([])
   const [selectedCar, setSelectedCar] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/car") 
+        if (!res.ok) throw new Error("Error al obtener autos")
+        const data = await res.json()
+        setCars(data)
+      } catch (err) {
+        console.error("Error al cargar autos:", err)
+      }
+    }
+    fetchCars()
+  }, [])
 
   const handleViewDetails = (car) => {
     setSelectedCar(car)
@@ -141,19 +42,6 @@ export default function HomePage() {
             <Car className="h-5 w-5 md:h-6 md:w-6" />
             <span className="font-bold text-lg md:text-xl">AutoMarket</span>
           </Link>
-
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-              Comprar
-            </Link>
-            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-              Vender
-            </Link>
-            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-              Financiamiento
-            </Link>
-          </nav>
-
           <div className="flex items-center gap-2 md:gap-3">
             <Button variant="ghost" size="sm" className="text-xs md:text-sm" asChild>
               <Link href="/login">Iniciar Sesión</Link>
@@ -190,35 +78,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-8 md:py-12 border-b">
-        <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Shield className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Compra Segura</h3>
-              <p className="text-sm text-muted-foreground">Todos los vehículos verificados y con garantía</p>
-            </div>
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Clock className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Proceso Rápido</h3>
-              <p className="text-sm text-muted-foreground">Publica tu auto en minutos y recibe ofertas</p>
-            </div>
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Car className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Miles de Opciones</h3>
-              <p className="text-sm text-muted-foreground">Encuentra el vehículo perfecto para ti</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Featured Cars */}
       <section className="py-12 md:py-16">
         <div className="container px-4 md:px-6">
@@ -235,21 +94,19 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {featuredCars.map((car) => (
+            {cars.map((car) => (
               <Card key={car.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
-                    src={car.image || "/placeholder.svg"}
+                    src={car.images?.[0]?.url || "/placeholder.svg"} // Primera imagen
                     alt={`${car.brand} ${car.model}`}
                     className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
                   />
-                  <Badge className="absolute top-3 right-3">{car.condition}</Badge>
+                  <Badge className="absolute top-3 right-3">{car.condition || "Usado"}</Badge>
                 </div>
                 <CardContent className="p-4">
                   <div className="space-y-2">
-                    <h3 className="font-semibold text-lg">
-                      {car.brand} {car.model}
-                    </h3>
+                    <h3 className="font-semibold text-lg">{car.brand} {car.model}</h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{car.year}</span>
                       <span>•</span>
@@ -263,108 +120,13 @@ export default function HomePage() {
                 </CardContent>
                 <CardFooter className="p-4 pt-0 flex items-center justify-between">
                   <div className="text-2xl font-bold">${car.price.toLocaleString()}</div>
-                  <Button size="sm" onClick={() => handleViewDetails(car)}>
-                    Ver Detalles
-                  </Button>
+                  <Button size="sm" onClick={() => handleViewDetails(car)}>Ver Detalles</Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-12 md:py-16 bg-muted">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center space-y-4 md:space-y-6">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">¿Quieres Vender tu Auto?</h2>
-            <p className="text-base md:text-lg text-muted-foreground px-4">
-              Regístrate gratis y publica tu vehículo en minutos. Miles de compradores te están esperando.
-            </p>
-            <Button size="lg" asChild>
-              <Link href="/register">Publicar Gratis</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t py-8 md:py-12 mt-auto">
-        <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Car className="h-5 w-5" />
-                <span className="font-bold">AutoMarket</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Tu marketplace de confianza para comprar y vender autos.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Comprar</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Autos Usados
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Autos Nuevos
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Por Marca
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Vender</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Publicar Auto
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Consejos
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Precios
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Ayuda</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Contacto
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    FAQ
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Términos
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t mt-6 md:mt-8 pt-6 md:pt-8 text-center text-xs md:text-sm text-muted-foreground">
-            <p>&copy; 2025 AutoMarket. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
 
       {/* Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -384,11 +146,11 @@ export default function HomePage() {
                 {/* Car Image */}
                 <div className="relative aspect-video overflow-hidden rounded-lg">
                   <img
-                    src={selectedCar.image || "/placeholder.svg"}
+                    src={selectedCar.images?.[0]?.url || "/placeholder.svg"}
                     alt={`${selectedCar.brand} ${selectedCar.model}`}
                     className="object-cover w-full h-full"
                   />
-                  <Badge className="absolute top-2 right-2 md:top-3 md:right-3">{selectedCar.condition}</Badge>
+                  <Badge className="absolute top-2 right-2 md:top-3 md:right-3">{selectedCar.condition || "Usado"}</Badge>
                 </div>
 
                 {/* Price */}
@@ -454,28 +216,33 @@ export default function HomePage() {
                       <User className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                       <div>
                         <p className="text-xs md:text-sm text-muted-foreground">Nombre</p>
-                        <p className="font-medium text-sm md:text-base">{selectedCar.seller.name}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs md:text-sm text-muted-foreground">Email</p>
-                        <p className="font-medium text-sm md:text-base truncate">{selectedCar.seller.email}</p>
+                        <p className="font-medium text-sm md:text-base">{selectedCar.user?.name}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                       <div>
                         <p className="text-xs md:text-sm text-muted-foreground">Teléfono</p>
-                        <p className="font-medium text-sm md:text-base">{selectedCar.seller.phone}</p>
+                        <p className="font-medium text-sm md:text-base">{selectedCar.user?.phone}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Contact Button */}
-                <Button className="w-full" size="lg">
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => {
+                    if (selectedCar.user?.phone) {
+                      const phone = selectedCar.user.phone.replace(/\D/g, "")
+                      const message = `Hola ${selectedCar.user.name}, estoy interesado en el ${selectedCar.brand} ${selectedCar.model} (${selectedCar.year}).`
+                      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank")
+                    } else {
+                      alert("El vendedor no tiene número de WhatsApp disponible.")
+                    }
+                  }}
+                >
                   Contactar Vendedor
                 </Button>
               </div>
