@@ -15,7 +15,9 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    phone: "",
+    city: ""
   })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -36,23 +38,36 @@ export default function RegisterPage() {
 
     setIsLoading(true)
 
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
 
-    const response = await fetch('http://localhost:8080/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
+      const result = await response.json()
 
-    console.log(formData)
+      if (response.ok) {
+        if (result.user && !result.user.is_verified) {
+          alert("¡Registro exitoso! Por favor, verifica tu email antes de ingresar al sitio.")
+          router.push("/login")
+        } else if (result.user) {
+          localStorage.clear()
+          localStorage.setItem("token", result.token)
+          localStorage.setItem("user", JSON.stringify(result.user))
+          router.push("/dashboard")
+        } else {
+          alert("Registro exitoso, Por favor, verifica tu email antes de ingresar al sitio.")
+          router.push("/login")
+        }
+      } else {
+        alert(result.message || "Error al crear la cuenta")
+      }
 
-    if (response.ok) {
-      setTimeout(() => {
-        console.log("Register attempt:", formData)
-        router.push("/dashboard")
-      }, 1000)
-    } else {
-      const errorData = await response.json()
-      alert(errorData.message || 'Error al crear la cuenta')
+    } catch (err) {
+      console.error(err)
+      alert("Error de conexión con el servidor")
+    } finally {
       setIsLoading(false)
     }
   }
@@ -86,8 +101,8 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-              <div>
-                <label htmlFor="phone">Teléfono</label>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Teléfono</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -98,8 +113,8 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-              <div>
-                <label htmlFor="city">Localidad</label>
+              <div className="space-y-2">
+                <Label htmlFor="city">Localidad</Label>
                 <Input
                   id="city"
                   name="city"
@@ -132,8 +147,6 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  minlength="8"
-                  pattern="(?=.*[a-z])(?=.*[A-Z]).{8,}"
                   title="Debe tener al menos 8 caracteres, una mayúscula y una minúscula."
                 />
               </div>
