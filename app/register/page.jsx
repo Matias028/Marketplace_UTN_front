@@ -146,8 +146,9 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  required
+                  required 
                   title="Debe tener al menos 8 caracteres, una mayúscula y una minúscula."
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 />
               </div>
               <div className="space-y-2">
@@ -160,6 +161,8 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  title="Debe tener al menos 8 caracteres, una mayúscula y una minúscula."
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 />
               </div>
             </CardContent>

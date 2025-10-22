@@ -7,17 +7,19 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Search, Car, Shield, Clock, MapPin, User, Phone, Mail, Gauge } from "lucide-react"
+import { Search, Car, Clock, MapPin, User, Phone, Gauge,Shield} from "lucide-react"
 
 export default function HomePage() {
   const [cars, setCars] = useState([])
+  const [searchQuery, setSearchQuery] = useState("")
   const [selectedCar, setSelectedCar] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  // Carga inicial de autos
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/car") 
+        const res = await fetch("http://localhost:8080/api/car")
         if (!res.ok) throw new Error("Error al obtener autos")
         const data = await res.json()
         setCars(data)
@@ -32,6 +34,13 @@ export default function HomePage() {
     setSelectedCar(car)
     setIsModalOpen(true)
   }
+
+  // Filtrado en frontend
+  const filteredCars = cars.filter(car =>
+    car.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    car.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    car.year.toString().includes(searchQuery)
+  )
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -68,7 +77,12 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3 max-w-2xl mx-auto mt-6 md:mt-8 px-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Buscar por marca, modelo o año..." className="pl-10 h-11 md:h-12" />
+                <Input
+                  placeholder="Buscar por marca, modelo o año..."
+                  className="pl-10 h-11 md:h-12"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
               <Button size="lg" className="h-11 md:h-12 px-6 md:px-8">
                 Buscar
@@ -77,6 +91,36 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+            {/* Features */}
+      <section className="py-8 md:py-12 border-b">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Shield className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Compra Segura</h3>
+              <p className="text-sm text-muted-foreground">Todos los vehículos verificados y con garantía</p>
+            </div>
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Clock className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Proceso Rápido</h3>
+              <p className="text-sm text-muted-foreground">Publica tu auto en minutos y recibe ofertas</p>
+            </div>
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Car className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Miles de Opciones</h3>
+              <p className="text-sm text-muted-foreground">Encuentra el vehículo perfecto para ti</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
 
       {/* Featured Cars */}
       <section className="py-12 md:py-16">
@@ -94,11 +138,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {cars.map((car) => (
+            {filteredCars.length === 0 && <p className="text-center col-span-full">No se encontraron autos</p>}
+            {filteredCars.map((car) => (
               <Card key={car.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
-                    src={car.images?.[0]?.url || "/placeholder.svg"} // Primera imagen
+                    src={car.images?.[0]?.url || "/placeholder.svg"}
                     alt={`${car.brand} ${car.model}`}
                     className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
                   />
@@ -127,6 +172,97 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      {/* CTA Section */}
+      <section className="py-12 md:py-16 bg-muted">
+        <div className="container px-4 md:px-6">
+          <div className="max-w-3xl mx-auto text-center space-y-4 md:space-y-6">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">¿Quieres Vender tu Auto?</h2>
+            <p className="text-base md:text-lg text-muted-foreground px-4">
+              Regístrate gratis y publica tu vehículo en minutos. Miles de compradores te están esperando.
+            </p>
+            <Button size="lg" asChild>
+              <Link href="/register">Publicar Gratis</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+      {/* Footer */}
+      <footer className="border-t py-8 md:py-12 mt-auto">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Car className="h-5 w-5" />
+                <span className="font-bold">AutoMarket</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Tu marketplace de confianza para comprar y vender autos.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Comprar</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Autos Usados
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Autos Nuevos
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Por Marca
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Vender</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Publicar Auto
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Consejos
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Precios
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Ayuda</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Contacto
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Términos
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t mt-6 md:mt-8 pt-6 md:pt-8 text-center text-xs md:text-sm text-muted-foreground">
+            <p>&copy; 2025 AutoMarket. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </footer>
 
       {/* Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -142,110 +278,100 @@ export default function HomePage() {
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="space-y-4 md:space-y-6">
-                {/* Car Image */}
-                <div className="relative aspect-video overflow-hidden rounded-lg">
-                  <img
-                    src={selectedCar.images?.[0]?.url || "/placeholder.svg"}
-                    alt={`${selectedCar.brand} ${selectedCar.model}`}
-                    className="object-cover w-full h-full"
-                  />
-                  <Badge className="absolute top-2 right-2 md:top-3 md:right-3">{selectedCar.condition || "Usado"}</Badge>
-                </div>
-
-                {/* Price */}
-                <div className="flex items-center justify-between p-3 md:p-4 bg-muted rounded-lg">
-                  <span className="text-base md:text-lg font-semibold">Precio</span>
-                  <span className="text-2xl md:text-3xl font-bold text-primary">
-                    ${selectedCar.price.toLocaleString()}
-                  </span>
-                </div>
-
-                {/* Car Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <Car className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    <div>
-                      <p className="text-xs md:text-sm text-muted-foreground">Marca</p>
-                      <p className="font-semibold text-sm md:text-base">{selectedCar.brand}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <Car className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    <div>
-                      <p className="text-xs md:text-sm text-muted-foreground">Modelo</p>
-                      <p className="font-semibold text-sm md:text-base">{selectedCar.model}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    <div>
-                      <p className="text-xs md:text-sm text-muted-foreground">Año</p>
-                      <p className="font-semibold text-sm md:text-base">{selectedCar.year}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <Gauge className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    <div>
-                      <p className="text-xs md:text-sm text-muted-foreground">Kilometraje</p>
-                      <p className="font-semibold text-sm md:text-base">{selectedCar.mileage.toLocaleString()} km</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 border rounded-lg sm:col-span-2">
-                    <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    <div>
-                      <p className="text-xs md:text-sm text-muted-foreground">Ubicación</p>
-                      <p className="font-semibold text-sm md:text-base">{selectedCar.location}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-base md:text-lg">Descripción</h3>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                    {selectedCar.description}
-                  </p>
-                </div>
-
-                {/* Seller Information */}
-                <div className="border-t pt-4 md:pt-6 space-y-3 md:space-y-4">
-                  <h3 className="font-semibold text-base md:text-lg">Información del Vendedor</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <User className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div>
-                        <p className="text-xs md:text-sm text-muted-foreground">Nombre</p>
-                        <p className="font-medium text-sm md:text-base">{selectedCar.user?.name}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div>
-                        <p className="text-xs md:text-sm text-muted-foreground">Teléfono</p>
-                        <p className="font-medium text-sm md:text-base">{selectedCar.user?.phone}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Button */}
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={() => {
-                    if (selectedCar.user?.phone) {
-                      const phone = selectedCar.user.phone.replace(/\D/g, "")
-                      const message = `Hola ${selectedCar.user.name}, estoy interesado en el ${selectedCar.brand} ${selectedCar.model} (${selectedCar.year}).`
-                      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank")
-                    } else {
-                      alert("El vendedor no tiene número de WhatsApp disponible.")
-                    }
-                  }}
-                >
-                  Contactar Vendedor
-                </Button>
+              {/* Car Image */}
+              <div className="relative aspect-video overflow-hidden rounded-lg">
+                <img
+                  src={selectedCar.images?.[0]?.url || "/placeholder.svg"}
+                  alt={`${selectedCar.brand} ${selectedCar.model}`}
+                  className="object-cover w-full h-full"
+                />
+                <Badge className="absolute top-2 right-2 md:top-3 md:right-3">{selectedCar.condition || "Usado"}</Badge>
               </div>
+
+              {/* Price */}
+              <div className="flex items-center justify-between p-3 md:p-4 bg-muted rounded-lg my-4">
+                <span className="text-base md:text-lg font-semibold">Precio</span>
+                <span className="text-2xl md:text-3xl font-bold text-primary">
+                  ${selectedCar.price.toLocaleString()}
+                </span>
+              </div>
+
+              {/* Car Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Car className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-xs md:text-sm text-muted-foreground">Marca</p>
+                    <p className="font-semibold text-sm md:text-base">{selectedCar.brand}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Car className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-xs md:text-sm text-muted-foreground">Modelo</p>
+                    <p className="font-semibold text-sm md:text-base">{selectedCar.model}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-xs md:text-sm text-muted-foreground">Año</p>
+                    <p className="font-semibold text-sm md:text-base">{selectedCar.year}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Gauge className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-xs md:text-sm text-muted-foreground">Kilometraje</p>
+                    <p className="font-semibold text-sm md:text-base">{selectedCar.mileage.toLocaleString()} km</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 border rounded-lg sm:col-span-2">
+                  <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-xs md:text-sm text-muted-foreground">Ubicación</p>
+                    <p className="font-semibold text-sm md:text-base">{selectedCar.location}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Seller Info */}
+              <div className="border-t pt-4 md:pt-6 space-y-3 md:space-y-4">
+                <h3 className="font-semibold text-base md:text-lg">Información del Vendedor</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <User className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div>
+                      <p className="text-xs md:text-sm text-muted-foreground">Nombre</p>
+                      <p className="font-medium text-sm md:text-base">{selectedCar.user?.name}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div>
+                      <p className="text-xs md:text-sm text-muted-foreground">Teléfono</p>
+                      <p className="font-medium text-sm md:text-base">{selectedCar.user?.phone}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Button */}
+              <Button
+                className="w-full mt-4"
+                size="lg"
+                onClick={() => {
+                  if (selectedCar.user?.phone) {
+                    const phone = selectedCar.user.phone.replace(/\D/g, "")
+                    const message = `Hola ${selectedCar.user.name}, estoy interesado en el ${selectedCar.brand} ${selectedCar.model} (${selectedCar.year}).`
+                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank")
+                  } else {
+                    alert("El vendedor no tiene número de WhatsApp disponible.")
+                  }
+                }}
+              >
+                Contactar Vendedor
+              </Button>
             </>
           )}
         </DialogContent>
