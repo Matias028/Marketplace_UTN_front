@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
       const fetchUserCars = async () => {
         try {
-          const res = await fetch(`http://localhost:8080/api/car/user/${parsedUser.id}`, {
+          const res = await fetch(`${process.env.BACKEND_URL}/api/car/user/${parsedUser.id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
           if (!res.ok) throw new Error("Error al obtener autos del usuario")
@@ -72,7 +72,7 @@ export default function DashboardPage() {
     if (!carToDelete) return
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch(`http://localhost:8080/api/car/${carToDelete.id}`, {
+      const res = await fetch(`${process.env.BACKEND_URL}/api/car/${carToDelete.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -113,7 +113,7 @@ export default function DashboardPage() {
     if (!carToEdit) return
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch(`http://localhost:8080/api/car/${carToEdit.id}`, {
+      const res = await fetch(`${process.env.BACKEND_URL}/api/car/${carToEdit.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

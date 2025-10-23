@@ -15,11 +15,10 @@ export default function HomePage() {
   const [selectedCar, setSelectedCar] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Carga inicial de autos
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/car")
+        const res = await fetch(`${process.env.BACKEND_URL}/api/car`)
         if (!res.ok) throw new Error("Error al obtener autos")
         const data = await res.json()
         setCars(data)
