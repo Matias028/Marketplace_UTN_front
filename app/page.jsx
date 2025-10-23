@@ -18,7 +18,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const res = await fetch(`${process.env.BACKEND_URL}/api/car`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/car`)
         if (!res.ok) throw new Error("Error al obtener autos")
         const data = await res.json()
         setCars(data)

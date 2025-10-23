@@ -57,7 +57,7 @@ export default function NewCarPage() {
         ...formData
       }
 
-      const response = await fetch(`${process.env.BACKEND_URL}/api/car`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/car`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
