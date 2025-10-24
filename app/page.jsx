@@ -32,9 +32,10 @@ export default function HomePage() {
   const handleViewDetails = (car) => {
     setSelectedCar(car)
     setIsModalOpen(true)
+    selectedCar (car)
+    
   }
 
-  // Filtrado en frontend
   const filteredCars = cars.filter(car =>
     car.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
     car.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -332,6 +333,12 @@ export default function HomePage() {
                     <p className="font-semibold text-sm md:text-base">{selectedCar.location}</p>
                   </div>
                 </div>
+              </div>
+
+              {/* Description */}
+              <div className="border-t pt-4 md:pt-6 space-y-3 md:space-y-4">
+                <h3 className="font-semibold text-base md:text-lg">Descripción</h3>
+                <p className="text-sm md:text-base">{selectedCar.description}</p>
               </div>
 
               {/* Seller Info */}

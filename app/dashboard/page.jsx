@@ -91,7 +91,7 @@ export default function DashboardPage() {
   }
 
   // Editar auto
-  const openEditDialog = (car) => {
+  const openEditDialog = (car) => { 
     setCarToEdit(car)
     setEditForm({
       brand: car.brand || "",
